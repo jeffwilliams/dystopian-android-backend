@@ -1,0 +1,12 @@
+<cards>
+  <faction name="britannia">
+    <unit name="ruler class battleship">
+      <image name="ruler.png" zorder="1"/>
+      <image name="britannia_bg1.png" zorder="0"/>
+    </unit>
+    <unit name="lexington class cruiser">
+      <image name="lexington.png" zorder="1"/>
+      <image name="britannia_bg1.png" zorder="0"/>
+    </unit>
+  </faction>
+</cards>

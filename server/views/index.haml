@@ -1,0 +1,32 @@
+%html{ :lang => "en" }
+  %head
+    %title Dystopian Wars - Android Card Server
+    %link{ :type => "text/css", :rel => "stylesheet", :href => "style.css" }
+  %body
+    %h1 Dystopian Wars - Android Card Server
+    %p
+      Some useful URLS on this RESTful server:
+    %table
+      %tr
+        %th Path
+        %th Function
+      %tr
+        %td 
+          %a{ :href => "/latest_xml_version"}
+            \/latest_xml_version
+        %td Get the version number of the latest version of the cards XML file
+      %tr
+        %td 
+          %a{ :href => "/latest_xml"}
+            \/latest_xml
+        %td Get the latest XML file
+      %tr
+        %td 
+          %a{ :href => "/image"}
+            \/image
+        %td Get the image for the specified unit. Pass '?unit=X'.
+      %tr
+        %td 
+          %a{ :href => "/upload"}
+            \/upload
+        %td Upload a new cards archive.

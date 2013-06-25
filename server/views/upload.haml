@@ -1,0 +1,32 @@
+%html{ :lang => "en" }
+  %head
+    %title Dystopian Wars - Android Card Server
+    %link{ :type => "text/css", :rel => "stylesheet", :href => "style.css" }
+    %script{:language => "javascript"}
+      :plain
+        function handle_submit()
+        {
+          var iframe = document.getElementById('uploadiframe');
+          if ( iframe != null )
+          {
+            frameDoc = iframe.contentDocument || iframe.contentWindow.document;
+            frameDoc.documentElement.innerHTML = "Uploading archive...";
+          }
+          else {
+            console.log("No iframe");
+          }
+          var form = document.getElementById('upload_form');
+          if ( form != null )
+          {
+            form.submit();
+          }
+        }
+  %body
+    %h1 Dystopian Wars - Android Card Server - Upload new archive
+    %p
+      Use this page to upload a new version of a cards archive. The format of the upload 
+      should be a .zip file that contains a cards.xml file, and a bunch of .png images.
+    %form{ :method => "post", :enctype => "multipart/form-data", :action => "/handle_upload", :id => "upload_form", :target => "uploadiframe" }
+      %input{ :type => "file", :name => "archive", :value => "browse..." } 
+      %input{ :type => "submit", :value => "Upload", :onclick => "handle_submit(); return false;" }
+    %iframe{ :id => 'uploadiframe', :name => 'uploadiframe' }
