@@ -98,44 +98,35 @@ end
 get "/image" do
   halt 423, "Cards archive is being updated" if $upload_in_progress
 
-  input_unit = params[:unit]
+  input_image_name = params[:name]
   
-  halt 500, "The parameter 'unit' must be passed, set to the unit name." if ! input_unit
+  halt 500, "The parameter 'name' must be passed, set to the image file name." if ! input_image_name
   
   xml_doc = load_cards_xml
   cards = get_cards_elem(xml_doc)
 
   io = nil
-  unit_found = false
+  image_found = false
   image_path = nil
-  cards.css('unit').each do |unit|
-    unit_name = unit.attribute('name')
-    next if unit_name.to_s != input_unit
-    unit_found = true
-    image = unit.css('image').first
-    if image
-      filename = image.attribute('name')
-      image_path = CARDS_DIR + File::SEPARATOR + filename
-      begin
-        io = File.open(image_path,"rb")
-      rescue
-        puts "/image: Image file #{path} referred to by unit #{unit_name} doesn't exist"
-        halt 500, "Unit's image not found"
-      end
-      break
+  cards.css('image').each do |image|
+    image_name = image.attribute('name')
+    next if image_name.to_s != input_image_name
+    image_found = true
+    image_path = CARDS_DIR + File::SEPARATOR + image_name.to_s
+    begin
+      io = File.open(image_path,"rb")
+    rescue
+      puts "/image: Loading image file #{input_image_name} failed: #{$!}"
+      halt 500, "Loading image failed"
     end
+    break
   end
     
-  if ! unit_found
-    puts "/image: Unit #{input_unit} not found"
-    halt 500, "Unit not found"
+  if ! image_found
+    puts "/image: image #{input_image_name} not found"
+    halt 404, "Image not found"
   end 
   
-  if ! io
-    puts "/image: Unit #{input_unit} image not openable"
-    halt 500, "Units image not found"
-  end
-
   mime_type = Mime.instance.getMimeTypeOfFilename(image_path)
   mime_type = "application/octet-stream" if ! mime_type
 
@@ -150,7 +141,6 @@ get "/upload" do
   if SessionStore.instance.valid_session?(sid)
     haml :upload
   else
-    #haml :login, :locals => {:error => errorMessage}
     haml :login
   end
 end
