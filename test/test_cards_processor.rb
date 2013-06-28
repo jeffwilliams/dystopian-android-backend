@@ -77,7 +77,7 @@ class TestCardsProcessor < MiniTest::Unit::TestCase
     # Cards file changed since the version of one of the images changed.
     xml_doc.css("cards").each do |card|
       time = Time.parse card.attribute('version').to_s
-      assert time.to_i < second_run_time.to_i + 1, "cards version time is invalid"
+      assert time.to_i < second_run_time.to_i + 1, "cards version time is invalid [2]"
       assert time.to_i > second_run_time.to_i - 1, "cards version time is invalid: parsed: #{time} expected: #{first_run_time}"
     end
 
@@ -86,8 +86,8 @@ class TestCardsProcessor < MiniTest::Unit::TestCase
       expected_time = first_run_time
       expected_time = second_run_time if img.attribute("name").to_s == 'ruler.png'
       time = Time.parse img.attribute('version').to_s
-      assert time.to_i < expected_time.to_i + 1, "image version time is invalid"
-      assert time.to_i > expected_time.to_i - 1, "image version time is invalid"
+      assert time.to_i < expected_time.to_i + 1, "image version time is invalid [2]"
+      assert time.to_i > expected_time.to_i - 1, "image version time is invalid [2]"
     end
 
     sleep 5
@@ -115,8 +115,17 @@ class TestCardsProcessor < MiniTest::Unit::TestCase
       assert time.to_i > expected_time.to_i - 1, "image version time is invalid"
     end
 
+    # Test cleaning
+    
+    # clear all versions out. Make sure that this cascades to delete units and images.
+    CardsProcessor.new(THIS_TEST_TMP_DIR).clean_db 0
+
+    assert_equal 0, Version.all.size, "cleaning versions failed"
+    assert_equal 0, Unit.all.size, "cleaning units failed"
+    assert_equal 0, Image.all.size, "cleaning images failed"
+    
   end
-  
+ 
 end
 
 

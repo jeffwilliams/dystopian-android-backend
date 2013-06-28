@@ -1,7 +1,6 @@
 #!/usr/bin/env ruby
 require 'lib/authentication.rb'
-
-PASSWD_FILE = "etc/passwd"
+require 'lib/const.rb'
 
 if ARGV.size == 0
   puts "Usage: #{$0} <username>"

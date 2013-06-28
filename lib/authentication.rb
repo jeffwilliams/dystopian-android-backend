@@ -35,6 +35,15 @@ class Authentication
     end
     del_account_internal(login)
   end
+
+  # Returns true on success, false if the user cannot be authenticated
+  def authenticate(login, password)
+    # Reload the password file in case users were added/deleted
+    acct = @accounts[login]
+    return false if ! acct
+    hashed = hash_password(password, acct.salt)
+    hashed == acct.password_hash
+  end
   
   private
   
@@ -54,9 +63,9 @@ class Authentication
   def add_account_internal(login, unhashed_password)
     salt = RandString.make_random_string(10)
     acct = AccountInfo.new(login, hash_password(unhashed_password, salt), salt)
-    File.open(@password_file, "a"){ |file|
+    File.open(@password_file, "a") do |file|
       file.puts "#{login}:#{acct.password_hash}:#{salt}"
-    }
+    end
     @accounts[login] = acct
   end
 
@@ -66,13 +75,13 @@ class Authentication
 
   def del_account_internal(login)
     tmpfile = "#{@password_file}.new"
-    File.open(tmpfile, "w"){ |outfile|
-      File.open(@password_file, "r"){ |infile|
-        infile.each_line { |line|
+    File.open(tmpfile, "w") do |outfile|
+      File.open(@password_file, "r") do |infile|
+        infile.each_line do |line|
           outfile.print line if line !~ /^#{login}:/
-        }
-      }
-    }
+        end
+      end
+    end
     FileUtils.mv tmpfile, @password_file
   end
 

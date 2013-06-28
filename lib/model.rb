@@ -30,14 +30,23 @@ class Unit
   include DataMapper::Resource
 
   property :id,            Serial
-  # SHA1 hash of the image file for this unit
+  property :name,          String
+
+  belongs_to :version
+  has n, :images, :through => Resource, :constraint => :destroy
+end
+
+class Image
+  include DataMapper::Resource
+
+  property :id,            Serial
+  # SHA1 hash of the image file 
   property :sha1sum,       String
   property :name,          String
-  property :filename,      String
   # Date when the contents for the image file last changed
   property :last_modified, DateTime
 
-  belongs_to :version
+  has n, :units, :through => Resource, :constraint => :destroy
 end
 
 DataMapper.finalize

@@ -3,7 +3,17 @@ require 'rubygems'
 require 'minitest/unit'
 require 'minitest/autorun'
 require 'fileutils'
+
+# Before including the cards_processor, make sure that the right database is configured
+# correctly and that it is deleted if it already exists.
+db_file = "test/data/dystopian.sqlite"
+ENV['DW_DB_FILE'] = db_file
+FileUtils.rm db_file if File.exists? db_file
+
 require 'lib/cards_archive_handler.rb'
+
+# Create the database since we cleared it out
+DataMapper.auto_migrate!
 
 # set up all tests
 TMP_DIR = "test/data/tmp/"
@@ -31,7 +41,7 @@ class TestCardsProcessor < MiniTest::Unit::TestCase
     begin
       handler.process_new_archive(TEST_DATA_DIR + File::SEPARATOR + "cards_archive_valid.zip")
     rescue
-      flunk "Exception when processing valid archive: #{$!}" 
+      flunk "Exception when processing valid archive: #{$!} #{$!.backtrace.join("\n")}" 
     end
 
     assert File.exists?(THIS_TEST_TMP_DIR2 + File::SEPARATOR + "cards.xml"), "Output directory doesn't contain cards.xml"

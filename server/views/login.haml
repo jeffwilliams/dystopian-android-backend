@@ -1,0 +1,25 @@
+%html{ :lang => "en" }
+  %head
+    %title Dystopian Wars - Android Card Server
+    %link{ :type => "text/css", :rel => "stylesheet", :href => "style.css" }
+  %body
+    %h1 Dystopian Wars - Android Card Server - Login
+    - if locals[:note]
+      %p{ :class => "note" }
+        = locals[:note]
+        %br
+    %form{ :method => "post", :action => "login" }
+      %table
+        %tr
+          %td Login:
+          %td
+            %input{ :type => 'text', :name => "login" }
+        %tr
+          %td Password:
+          %td
+            %input{ :type => 'password', :name => "password" }
+        %tr
+          %td
+          %td
+            %input{ :type => "submit", :value => "login" }
+

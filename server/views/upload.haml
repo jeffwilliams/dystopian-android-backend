@@ -23,6 +23,8 @@
         }
   %body
     %h1 Dystopian Wars - Android Card Server - Upload new archive
+    %form{ :method => "post", :action => "logout" }
+      %input{ :type => "submit", :value => "logout" }
     %p
       Use this page to upload a new version of a cards archive. The format of the upload 
       should be a .zip file that contains a cards.xml file, and a bunch of .png images.

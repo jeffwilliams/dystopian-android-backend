@@ -7,9 +7,14 @@ require 'nokogiri'
 require 'lib/mime'
 require 'lib/const'
 require 'lib/cards_archive_handler'
+require 'lib/session'
+require 'lib/authentication'
+require 'lib/const.rb'
 
 set :bind, '0.0.0.0'
 set :port, 5001
+enable :sessions
+
 
 $upload_in_progress = false
 
@@ -141,10 +146,38 @@ get "/image" do
 end
 
 get "/upload" do
-  haml :upload
+  sid = session[:sid]
+  if SessionStore.instance.valid_session?(sid)
+    haml :upload
+  else
+    #haml :login, :locals => {:error => errorMessage}
+    haml :login
+  end
+end
+
+post "/login" do
+  auth = Authentication.new PASSWD_FILE
+  if auth.authenticate params[:login].to_s, params[:password].to_s
+    sid = SessionStore.instance.start_session(params[:login].to_s)
+    session[:sid] = sid
+    redirect "/upload"
+  else
+    haml :login, :locals => {:note => 'login or password is incorrect.'}
+  end
+end
+
+post "/logout" do
+  SessionStore.instance.end_session(session[:sid])
+  session.delete :sid
+  redirect "/"
 end
 
 post "/handle_upload" do
+  sid = session[:sid]
+  if !SessionStore.instance.valid_session?(sid)
+    halt 401, "You must login first"
+  end
+
   if ! params['archive']
     halt 500, "The parameter 'archive' must be passed"
   end
