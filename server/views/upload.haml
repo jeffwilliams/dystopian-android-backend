@@ -27,7 +27,25 @@
       %input{ :type => "submit", :value => "logout" }
     %p
       Use this page to upload a new version of a cards archive. The format of the upload 
-      should be a .zip file that contains a cards.xml file, and a bunch of .png images.
+      should be a .zip file that contains a cards.xml file, and a bunch of .png images. The XML file should be 
+      in the following (example) format:
+    %hr
+    %pre
+      :escaped
+            <cards>
+          <faction name="britannia">
+            <unit name="ruler class battleship">
+              <image name="ruler.png" zorder="1"/>
+              <image name="britannia_bg1.png" zorder="0"/>
+            </unit>
+            <unit name="lexington class cruiser">
+              <image name="lexington.png" zorder="1"/>
+              <image name="britannia_bg1.png" zorder="0"/>
+            </unit>
+          </faction>
+        </cards>
+    %hr
+    %p
     %form{ :method => "post", :enctype => "multipart/form-data", :action => "/handle_upload", :id => "upload_form", :target => "uploadiframe" }
       %input{ :type => "file", :name => "archive", :value => "browse..." } 
       %input{ :type => "submit", :value => "Upload", :onclick => "handle_submit(); return false;" }
