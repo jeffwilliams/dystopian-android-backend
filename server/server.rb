@@ -4,6 +4,7 @@ require 'rubygems'
 require 'sinatra'
 require 'haml'
 require 'nokogiri'
+require 'logger'
 require 'lib/mime'
 require 'lib/const'
 require 'lib/cards_archive_handler'
@@ -14,9 +15,11 @@ require 'lib/const.rb'
 set :bind, '0.0.0.0'
 set :port, 5001
 enable :sessions
+enable :logging, :dump_errors
 
 
 $upload_in_progress = false
+
 
 # Return this from a Sinatra route to stream a file
 class Streamer
