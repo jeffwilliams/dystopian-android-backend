@@ -144,6 +144,7 @@ get "/upload" do
   if SessionStore.instance.valid_session?(sid)
     haml :upload
   else
+    session[:redir] = "/upload"
     haml :login
   end
 end
@@ -153,7 +154,11 @@ post "/login" do
   if auth.authenticate params[:login].to_s, params[:password].to_s
     sid = SessionStore.instance.start_session(params[:login].to_s)
     session[:sid] = sid
-    redirect "/upload"
+    if session[:redir]
+      redirect session[:redir]
+    else
+      redirect "/upload"
+    end
   else
     haml :login, :locals => {:note => 'login or password is incorrect.'}
   end
@@ -188,4 +193,22 @@ post "/handle_upload" do
   end
  
   $upload_in_progress = false
+end
+
+get "/log" do
+  sid = session[:sid]
+  if SessionStore.instance.valid_session?(sid)
+    # Load the current logfile and display it.
+    log = ""
+    begin
+      File.open(LOG_FILE, "r") do |f|
+        log = f.read
+      end
+    rescue
+    end
+    haml :log, :locals => {:log => log}
+  else
+    session[:redir] = "/log"
+    haml :login
+  end
 end

@@ -3,5 +3,6 @@ CARDS_FILE_NAME = "cards.xml"
 CARDS_DIR = "data"
 # Location of the password file
 PASSWD_FILE = "etc/passwd"
-
+# Location of logfile
+LOG_FILE = "log/sinatra.log"
 
